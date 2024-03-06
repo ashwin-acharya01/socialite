@@ -1,8 +1,14 @@
 import GridPostList from "@/components/shared/GridPostList";
+import Loader from "@/components/shared/Loader";
 import { TabsComponent } from "@/components/shared/TabComponents";
 import { Button } from "@/components/ui/button";
 import { useUserContext } from "@/context/AuthContext";
-import { useFetchUser } from "@/lib/react-query/queriesAndMutations";
+import {
+  useFetchUser,
+  useFollowUser,
+  useUnfollowUser,
+} from "@/lib/react-query/queriesAndMutations";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const Profile = () => {
@@ -10,10 +16,21 @@ const Profile = () => {
   const { data: userData, isPending: isFetchingUserData } = useFetchUser(
     id || ""
   );
+  const { mutateAsync: followUser, isPending: isUserFollowed } =
+    useFollowUser();
+  const { mutateAsync: unFollowUser, isPending: isUserUnFollowed } =
+    useUnfollowUser();
   const navigate = useNavigate();
   const { user } = useUserContext();
+  const [followButtonAction, setFollowButtonAction] = useState<string>("");
   // console.log(id);
   console.log(userData);
+
+  useEffect(() => {
+    if(userData){
+      setFollowButtonAction(userData?.followers.includes(user.id) ? "Unfollow" : "Follow");
+    }
+  }, [userData]);
 
   return (
     <div className="profile-container">
@@ -39,13 +56,37 @@ const Profile = () => {
                 </p>
               </div>
               <Button
-                className="bg-primary-500 text-light-1 text-lg hidden md:block"
+                className={`bg-primary-500 text-light-1 text-lg hidden md: ${
+                  userData?.$id === user.id ? "block" : "hidden"
+                }`}
                 variant="ghost"
                 onClick={() => {
-                  if(userData?.$id === user.id) navigate(`/update-profile/${user.id}`)
+                  navigate(`/update-profile/${user.id}`);
                 }}
               >
-                {userData?.$id === user.id ? "Update Profile" : "Follow"}
+                Update Profile
+              </Button>
+              <Button
+                className={`bg-primary-500 text-light-1 text-lg hidden none md: ${
+                  userData?.$id !== user.id ? "block" : "hidden"
+                }`}
+                variant="ghost"
+                disabled={isUserFollowed || isUserUnFollowed}
+                onClick={async () => {
+                  if (followButtonAction === "Follow") {
+                    const status = await followUser({ targetUser: id || "", user: user.id });
+                    if(status !== undefined && status.status === 'ok') setFollowButtonAction("Unfollow");
+                  } else if (followButtonAction === "Unfollow") {
+                    const status = await unFollowUser({ targetUser: id || "", user: user.id });
+                    if(status !== undefined && status.status === 'ok') setFollowButtonAction("Follow");
+                  }
+                }}
+              >
+                {isUserFollowed || isUserUnFollowed ? (
+                  <Loader />
+                ) : (
+                  followButtonAction
+                )}
               </Button>
             </div>
             <div className="flex justify-start items-center gap-4 md:gap-8">
@@ -76,8 +117,38 @@ const Profile = () => {
               {userData?.bio}
             </p>
             <div className="md:hidden">
-              <Button className="bg-primary-500 text-light-1 small-medium">
-                {userData?.$id === user.id ? "Update Profile" : "Follow"}
+              <Button
+                className={`bg-primary-500 text-light-1 text-lg hidden md: ${
+                  userData?.$id === user.id ? "block" : "hidden"
+                }`}
+                variant="ghost"
+                onClick={() => {
+                  navigate(`/update-profile/${user.id}`);
+                }}
+              >
+                Update Profile
+              </Button>
+              <Button
+                className={`bg-primary-500 text-light-1 text-lg hidden none md: ${
+                  userData?.$id !== user.id ? "block" : "hidden"
+                }`}
+                disabled={isUserFollowed || isUserUnFollowed}
+                variant="ghost"
+                onClick={async () => {
+                  if (followButtonAction === "Follow") {
+                    const status = await followUser({ targetUser: id || "", user: user.id });
+                    if(status !== undefined && status.status === 'ok') setFollowButtonAction("Unfollow");
+                  } else if (followButtonAction === "Unfollow") {
+                    const status = await unFollowUser({ targetUser: id || "", user: user.id });
+                    if(status !== undefined && status.status === 'ok') setFollowButtonAction("Follow");
+                  }
+                }}
+              >
+                {isUserFollowed || isUserUnFollowed ? (
+                  <Loader />
+                ) : (
+                  followButtonAction
+                )}
               </Button>
             </div>
           </div>

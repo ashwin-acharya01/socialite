@@ -43,6 +43,6 @@ export const ProfileValidation = z.object({
     file: z.custom<File[]>(),
     name: z.string(),
     username: z.string(),
-    isAccountPrivate: z.boolean(),
+    // isAccountPrivate: z.boolean(),
     bio: z.string().max(100),
 })

@@ -1,7 +1,10 @@
+import ProfileCard from "@/components/shared/ProfileCard"
 
 const AllUsers = () => {
   return (
-    <div>AllUsers</div>
+    <div>
+      {/* <ProfileCard /> */}
+    </div>
   )
 }
 

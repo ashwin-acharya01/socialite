@@ -44,7 +44,7 @@ const PostForms = ({ userData }: PostFormProps) => {
       file: [],
       name: userData ? userData?.name : "",
       username: userData ? userData?.username : "",
-      isAccountPrivate: userData ? userData?.isAccountPrivate : "",
+      // isAccountPrivate: userData ? userData?.isAccountPrivate : "",
       bio: userData ? userData?.bio : "",
     },
   });
@@ -117,7 +117,7 @@ const PostForms = ({ userData }: PostFormProps) => {
             </FormItem>
           )}
         />
-
+        {/*  
         <FormField
           control={form.control}
           name="isAccountPrivate"
@@ -140,6 +140,7 @@ const PostForms = ({ userData }: PostFormProps) => {
             </FormItem>
           )}
         />
+        */}
 
         <FormField
           control={form.control}

@@ -20,8 +20,8 @@ const Explore = () => {
 
   if(!posts){
     return (
-      <div className="flex-center w-full h-full">
-        <Loader />
+      <div className="flex-center w-full h-screen">
+        <Loader />&nbsp;&nbsp;Loading...
       </div>
     )
   }

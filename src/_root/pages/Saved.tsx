@@ -11,7 +11,7 @@ const Saved = () => {
 
   if(isFetchingPost) {
     return (
-        <div className="flex-center"><Loader /></div>
+        <div className="flex w-full h-screen justify-center items-center"><Loader />&nbsp;Looking for Saved Posts...</div>
     )
   }
 
@@ -26,7 +26,9 @@ const Saved = () => {
     )
   }
     return (
-    <p className="text-light-4 mt-10 text-center w-full">No results found</p>
+      <div className="flex justify-center items-center w-full h-screen">
+        <p className="text-light-2 text-xl mt-10 text-center">No results found</p>
+    </div>
   )
 }
 
